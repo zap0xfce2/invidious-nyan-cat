@@ -20,7 +20,7 @@ async function seekTo(page, fraction) {
     video.muted = true;
     video.play().catch(() => {});
   });
-  // video.js blendet die Steuerleiste erst nach dem ersten Start ein.
+  // video.js only shows the control bar after the first play.
   await page.waitForSelector(".video-js.vjs-has-started", { timeout: TIMEOUT_MS });
   await page.evaluate((f) => {
     const video = document.querySelector("video");
@@ -47,10 +47,10 @@ async function checkPlayer(page, name, url) {
   await seekTo(page, PROGRESS_FRACTION);
   const bar = await page.evaluate(readProgressBar);
 
-  assert.ok(bar.isMarked, `${name}: Invidious nicht erkannt`);
-  assert.ok(Math.abs(bar.playedFraction - PROGRESS_FRACTION) < FRACTION_TOLERANCE, `${name}: Regenbogen-Breite ${bar.playedFraction}`);
-  assert.match(bar.rainbow, /linear-gradient/, `${name}: kein Regenbogen`);
-  assert.match(bar.cat, /nyan\.gif/, `${name}: keine Katze`);
+  assert.ok(bar.isMarked, `${name}: Invidious not detected`);
+  assert.ok(Math.abs(bar.playedFraction - PROGRESS_FRACTION) < FRACTION_TOLERANCE, `${name}: rainbow width ${bar.playedFraction}`);
+  assert.match(bar.rainbow, /linear-gradient/, `${name}: no rainbow`);
+  assert.match(bar.cat, /nyan\.gif/, `${name}: no cat`);
 
   await page.screenshot({ path: `${SCREENSHOT_DIR}${name}.png` });
   console.log(`✅ ${name}`);
@@ -60,11 +60,11 @@ async function checkUntouched(page, url) {
   await page.goto(url, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(500);
   const isMarked = await page.evaluate(() => document.documentElement.classList.contains("nyan-invidious"));
-  assert.equal(isMarked, false, `${url}: fälschlich als Invidious erkannt`);
-  console.log(`✅ ${url} unberührt`);
+  assert.equal(isMarked, false, `${url}: wrongly detected as Invidious`);
+  console.log(`✅ ${url} untouched`);
 }
 
-assert.ok(INVIDIOUS_URL && VIDEO_ID, "INVIDIOUS_URL und VIDEO_ID müssen gesetzt sein");
+assert.ok(INVIDIOUS_URL && VIDEO_ID, "INVIDIOUS_URL and VIDEO_ID must be set");
 mkdirSync(SCREENSHOT_DIR, { recursive: true });
 
 const context = await chromium.launchPersistentContext("", {

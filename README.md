@@ -36,10 +36,13 @@ Temporary add-ons are removed when Firefox restarts.
 
 Requires [Task](https://taskfile.dev).
 
-| Command     | Description                                                                     |
-| ----------- | ------------------------------------------------------------------------------- |
-| `task zip`  | Builds `dist/invidious-nyan-cat.zip`                                            |
-| `task test` | Loads the extension in Chromium and checks it against a live Invidious instance |
+| Command        | Description                                                                     |
+| -------------- | ------------------------------------------------------------------------------- |
+| `task zip`     | Builds `dist/invidious-nyan-cat.zip`                                            |
+| `task test`    | Loads the extension in Chromium and checks it against a live Invidious instance |
+| `task release` | Creates GitHub release `v<version>` from `manifest.json` with the ZIP attached  |
+
+To publish a new version, bump `version` in `manifest.json`, commit, push and run `task release`.
 
 Test against another instance or video:
 
@@ -49,3 +52,7 @@ Test against another instance or video:
 
 Nyan Cat © Christopher Torres ([prguitarman](https://www.prguitarman.com)). GIF from [nyan.cat](https://www.nyan.cat).
 This project is not affiliated with Invidious or YouTube.
+
+## License
+
+The code is licensed under the [MIT License](LICENSE). The Nyan Cat artwork (`nyan.gif`, `icon-128.png`) is excluded and remains © Christopher Torres.

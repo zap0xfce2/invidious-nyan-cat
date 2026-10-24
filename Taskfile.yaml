@@ -3,22 +3,38 @@ version: "3"
 silent: true
 
 vars:
-  EXTENSION_FILES: manifest.json detect.js nyan.css nyan.gif icon-128.png
+  EXTENSION_FILES: manifest.json detect.js nyan.css nyan.gif icon-128.png _locales
+  ZIP_PATH: dist/invidious-nyan-cat.zip
   INVIDIOUS_URL: '{{.INVIDIOUS_URL | default "https://invidious.chaos-gate.is-a-geek.net"}}'
   VIDEO_ID: '{{.VIDEO_ID | default "4LtEJzkSJYc"}}'
+  VERSION:
+    sh: python3 -c "import json; print(json.load(open('manifest.json'))['version'])"
 
 tasks:
   zip:
-    desc: Packt die Erweiterung nach dist/invidious-nyan-cat.zip
+    desc: Builds the extension into dist/invidious-nyan-cat.zip
     cmds:
       - mkdir -p dist
-      - rm -f dist/invidious-nyan-cat.zip
-      # zip ist auf Alpine nicht installiert, Pythons zipfile-CLI reicht.
-      - python3 -m zipfile -c dist/invidious-nyan-cat.zip {{.EXTENSION_FILES}}
-      - echo "📦 dist/invidious-nyan-cat.zip"
+      - rm -f {{.ZIP_PATH}}
+      # Alpine ships no zip binary; Python's zipfile CLI does the job.
+      - python3 -m zipfile -c {{.ZIP_PATH}} {{.EXTENSION_FILES}}
+      - echo "📦 {{.ZIP_PATH}}"
+
+  release:
+    desc: Creates GitHub release v<manifest version> with the ZIP attached
+    deps: [zip]
+    preconditions:
+      - sh: git diff --quiet HEAD
+        msg: "Working tree has uncommitted changes. Commit first."
+      - sh: test -z "$(git log @{u}..)"
+        msg: "Local commits are not pushed yet. Push first."
+      - sh: "! git ls-remote --exit-code --tags origin v{{.VERSION}} >/dev/null"
+        msg: "Tag v{{.VERSION}} already exists. Bump the version in manifest.json."
+    cmds:
+      - gh release create v{{.VERSION}} {{.ZIP_PATH}} --target "$(git branch --show-current)" --title "v{{.VERSION}}" --generate-notes
 
   test:deps:
-    desc: Installiert playwright-core für die Browser-Tests
+    desc: Installs playwright-core for the browser tests
     dir: tests
     cmds:
       - npm install --silent
@@ -26,7 +42,7 @@ tasks:
       - test -d node_modules/playwright-core
 
   test:
-    desc: Lädt die Erweiterung in Chromium und prüft sie gegen eine Invidious-Instanz
+    desc: Loads the extension in Chromium and checks it against a live Invidious instance
     deps: [test:deps]
     dir: tests
     env:

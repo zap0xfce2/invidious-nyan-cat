@@ -1,4 +1,4 @@
-// Invidious-Seiten erkennt man an den JSON-Blöcken des Players, nicht an der Domain (jede Instanz hat eine eigene).
+// Detect Invidious by its player JSON blocks, not by domain (every instance has its own).
 const isInvidious =
   document.getElementById("player_data") && document.getElementById("video_data");
 

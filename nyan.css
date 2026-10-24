@@ -1,4 +1,4 @@
-/* Alles unter html.nyan-invidious, damit andere video.js-Seiten unberührt bleiben. */
+/* Everything is scoped to html.nyan-invidious so other video.js sites stay untouched. */
 html.nyan-invidious .video-js .vjs-progress-control .vjs-progress-holder {
   height: 6px !important;
   background: #0d1b4c;
@@ -20,7 +20,7 @@ html.nyan-invidious .video-js .vjs-play-progress {
   ) !important;
 }
 
-/* Ersetzt den runden Griff (Icon-Font) durch die Katze; !important schlägt player-style-youtube, das ihn ausblendet. */
+/* Replaces the round handle (icon font) with the cat; !important beats player-style-youtube, which hides it. */
 html.nyan-invidious .video-js .vjs-play-progress::before {
   content: "" !important;
   display: block !important;
