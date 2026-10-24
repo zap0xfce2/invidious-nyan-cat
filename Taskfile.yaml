@@ -1,0 +1,36 @@
+version: "3"
+
+silent: true
+
+vars:
+  EXTENSION_FILES: manifest.json detect.js nyan.css nyan.gif icon-128.png
+  INVIDIOUS_URL: '{{.INVIDIOUS_URL | default "https://invidious.chaos-gate.is-a-geek.net"}}'
+  VIDEO_ID: '{{.VIDEO_ID | default "4LtEJzkSJYc"}}'
+
+tasks:
+  zip:
+    desc: Packt die Erweiterung nach dist/invidious-nyan-cat.zip
+    cmds:
+      - mkdir -p dist
+      - rm -f dist/invidious-nyan-cat.zip
+      # zip ist auf Alpine nicht installiert, Pythons zipfile-CLI reicht.
+      - python3 -m zipfile -c dist/invidious-nyan-cat.zip {{.EXTENSION_FILES}}
+      - echo "📦 dist/invidious-nyan-cat.zip"
+
+  test:deps:
+    desc: Installiert playwright-core für die Browser-Tests
+    dir: tests
+    cmds:
+      - npm install --silent
+    status:
+      - test -d node_modules/playwright-core
+
+  test:
+    desc: Lädt die Erweiterung in Chromium und prüft sie gegen eine Invidious-Instanz
+    deps: [test:deps]
+    dir: tests
+    env:
+      INVIDIOUS_URL: "{{.INVIDIOUS_URL}}"
+      VIDEO_ID: "{{.VIDEO_ID}}"
+    cmds:
+      - node check.mjs

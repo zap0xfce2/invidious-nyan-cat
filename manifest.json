@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Nyan Cat Progress Bar for Invidious",
+  "version": "1.0.0",
+  "description": "Ersetzt den Fortschrittsbalken auf Invidious-Instanzen durch Regenbogen und Nyan Cat.",
+  "icons": { "128": "icon-128.png" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["nyan.css"],
+      "js": ["detect.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["nyan.gif"], "matches": ["<all_urls>"] }
+  ],
+  "browser_specific_settings": {
+    "gecko": { "id": "nyan-invidious@zap0xfce2.net", "strict_min_version": "109.0" }
+  }
+}

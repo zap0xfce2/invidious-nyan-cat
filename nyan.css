@@ -1,0 +1,34 @@
+/* Alles unter html.nyan-invidious, damit andere video.js-Seiten unberührt bleiben. */
+html.nyan-invidious .video-js .vjs-progress-control .vjs-progress-holder {
+  height: 6px !important;
+  background: #0d1b4c;
+}
+
+html.nyan-invidious .video-js .vjs-load-progress div {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+html.nyan-invidious .video-js .vjs-play-progress {
+  background: linear-gradient(
+    to bottom,
+    #ff0000 0 16.66%,
+    #ff9900 16.66% 33.33%,
+    #ffff00 33.33% 50%,
+    #33ff00 50% 66.66%,
+    #0099ff 66.66% 83.33%,
+    #6633ff 83.33% 100%
+  ) !important;
+}
+
+/* Ersetzt den runden Griff (Icon-Font) durch die Katze; !important schlägt player-style-youtube, das ihn ausblendet. */
+html.nyan-invidious .video-js .vjs-play-progress::before {
+  content: "" !important;
+  display: block !important;
+  width: 36px;
+  height: 22px;
+  top: 50%;
+  right: -18px;
+  transform: translateY(-50%);
+  background: var(--nyan-cat) center / contain no-repeat;
+  font-size: 0;
+}
